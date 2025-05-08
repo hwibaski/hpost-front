@@ -5,8 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -41,8 +39,6 @@ export const columns: ColumnDef<QuickBundle>[] = [
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -52,13 +48,31 @@ export const columns: ColumnDef<QuickBundle>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-              Copy payment ID
+            <DropdownMenuItem
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `주문 id: ${row.original.id} 주문번호: ${row.original.number} 주문일시: ${row.original.createdAt} 채널: ${row.original.channel}`
+                );
+              }}
+            >
+              주문 정보 복사
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                console.log('TODO: 영수증 출력 API 호출');
+              }}
+            >
+              영수증 출력
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="font-bold text-red-500"
+              onClick={() => {
+                console.log('TODO: 주문 취소 API 호출 ');
+              }}
+            >
+              {' '}
+              주문 취소
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

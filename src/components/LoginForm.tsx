@@ -1,17 +1,23 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks/useAuth';
 import { useLoginForm } from '@/hooks/useLoginForm';
-import { Link } from 'react-router-dom';
+import { useLogin } from '@/lib/api/auth/hooks';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
   const { formData, handleChange } = useLoginForm();
-  const { error, login } = useAuth();
+  const login = useLogin();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(formData);
+    const response = await login.mutateAsync(formData);
+
+    if (response?.success) {
+      localStorage.setItem('token', response.data.accessToken);
+      navigate('/');
+    }
   };
 
   return (
@@ -57,7 +63,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
           />
         </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {login.error && <p className="text-sm text-red-500">{login.error.message}</p>}
 
         <Button type="submit" className="w-full">
           로그인

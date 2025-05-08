@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { authService } from '@/lib/api/auth.service';
+import { useSignup } from '@/lib/api/auth/hooks';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,6 +23,7 @@ export default function SignupForm() {
   const [formData, setFormData] = useState<SignupFormData>(initialFormData);
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
+  const signup = useSignup();
 
   const handleChange =
     (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +34,7 @@ export default function SignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await authService.signup(formData);
+      const response = await signup.mutateAsync(formData);
       if (response?.success) {
         navigate('/login');
       } else {

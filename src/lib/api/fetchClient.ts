@@ -1,6 +1,6 @@
-const baseURL = 'http://localhost:3000';
+const baseURL = 'http://localhost:3000/api/v1';
 
-export const apiClient = {
+export class FetchClient {
   async request(url: string, options: RequestInit = {}) {
     const token = localStorage.getItem('token');
     const headers = {
@@ -29,11 +29,11 @@ export const apiClient = {
     } catch (error) {
       return Promise.reject(error);
     }
-  },
+  }
 
   async get<T>(url: string, options: RequestInit = {}): Promise<T> {
     return this.request(url, { ...options, method: 'GET' });
-  },
+  }
 
   async post<T, S>(url: string, data: T, options: RequestInit = {}): Promise<S> {
     return this.request(url, {
@@ -41,7 +41,7 @@ export const apiClient = {
       method: 'POST',
       body: JSON.stringify(data),
     });
-  },
+  }
 
   async put<T, S>(url: string, data: T, options: RequestInit = {}): Promise<S> {
     return this.request(url, {
@@ -49,9 +49,11 @@ export const apiClient = {
       method: 'PUT',
       body: JSON.stringify(data),
     });
-  },
+  }
 
   async delete(url: string, options: RequestInit = {}) {
     return this.request(url, { ...options, method: 'DELETE' });
-  },
-};
+  }
+}
+
+export const apiClient = new FetchClient();

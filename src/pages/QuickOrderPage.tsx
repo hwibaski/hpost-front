@@ -7,25 +7,25 @@ import { DelieryRequestInfo } from '@/components/quick-order/RequestInfo';
 import { MainContainer } from '@/components/ui/MainContainer';
 import { useAddress } from '@/hooks/useAddress';
 import { usePayment } from '@/hooks/usePayment';
-import { outboundService } from '@/lib/api/outbound.service';
+import { useCreateQuickOrder } from '@/lib/api/outbound/hooks';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const QuickOrderPage = () => {
   const [request, setRequest] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [itemInfo, setItemInfo] = useState({
-    document: 0,
+    document: 1,
     smallBox: 0,
     mediumBox: 0,
     bigBox: 0,
     etc: '',
-    weight: 0,
+    weight: 3,
     vehicle: 'BIKE',
   });
   const navigate = useNavigate();
   const { departure, arrival, handleAddressChange, setDeparture, setArrival } = useAddress();
   const { basePrice, additionalPrice } = usePayment();
+  const createQuickOrder = useCreateQuickOrder();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -48,8 +48,7 @@ const QuickOrderPage = () => {
 
   const handleSubmit = async () => {
     try {
-      setIsLoading(true);
-      await outboundService.createQuickOrder({
+      await createQuickOrder.mutateAsync({
         packagesToOrder: [
           {
             origin: {
@@ -90,8 +89,6 @@ const QuickOrderPage = () => {
       navigate('/quick-order-list');
     } catch (error) {
       alert(`퀵 주문 접수에 실패했습니다. ${error}`);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -120,7 +117,7 @@ const QuickOrderPage = () => {
               basePrice={basePrice}
               additionalPrice={additionalPrice}
               onPayment={handleSubmit}
-              isLoading={isLoading}
+              isLoading={createQuickOrder.isPending}
             />
           </div>
         </div>

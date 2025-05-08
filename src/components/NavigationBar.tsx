@@ -6,7 +6,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/NavigationMenu';
-import { authService, type MeResponse } from '@/lib/api/auth.service';
+import { authService, type MeResponse } from '@/lib/api/auth/auth.service';
 import { cn } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';

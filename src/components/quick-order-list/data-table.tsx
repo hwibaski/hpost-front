@@ -26,6 +26,7 @@ interface DataTableProps<TData, TValue> {
   totalCount: number;
   totalPages: number;
   page: number;
+  limitSize: number;
   onPageChange: (page: number) => void;
 }
 
@@ -90,6 +91,7 @@ export function DataTable<TData, TValue>({
   totalCount,
   totalPages,
   page,
+  limitSize,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -97,13 +99,13 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    rowCount: 10,
+    rowCount: limitSize,
     manualPagination: true,
     pageCount: totalPages,
     state: {
       pagination: {
         page: page,
-        pageSize: 10,
+        pageSize: limitSize,
       },
     },
     onPaginationChange: (updater) => {
@@ -142,7 +144,7 @@ export function DataTable<TData, TValue>({
       </Table>
       <div className="flex w-full items-center justify-between py-4">
         <div className="text-sm text-gray-600">
-          총 {totalCount}개 중 {(page - 1) * 10 + 1}-{page * 10}개 표시
+          {totalCount}개 중 {(page - 1) * limitSize + 1}-{page * limitSize}개 표시
         </div>
         <PaginationButton table={table} totalPages={totalPages} />
       </div>

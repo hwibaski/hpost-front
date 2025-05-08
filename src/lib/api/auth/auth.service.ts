@@ -1,5 +1,5 @@
+import { apiClient } from '@/lib/api/fetchClient';
 import type { ApiResponse } from '@/lib/api/types';
-import { apiClient } from './client';
 
 interface SignupRequest {
   name: string;
@@ -31,7 +31,7 @@ export interface MeResponse {
 export const authService = {
   async signup(data: SignupRequest): Promise<ApiResponse<SignupResponse>> {
     const response = await apiClient.post<SignupRequest, ApiResponse<SignupResponse>>(
-      '/api/v1/auth/signup',
+      '/auth/signup',
       data
     );
 
@@ -40,7 +40,7 @@ export const authService = {
 
   async login(data: LoginRequest): Promise<ApiResponse<LoginResponse>> {
     const response = await apiClient.post<LoginRequest, ApiResponse<LoginResponse>>(
-      '/api/v1/auth/login',
+      '/auth/login',
       data
     );
 
@@ -48,7 +48,7 @@ export const authService = {
   },
 
   async me(): Promise<ApiResponse<MeResponse>> {
-    const response = await apiClient.get('/api/v1/auth/me', {
+    const response = await apiClient.get<ApiResponse<MeResponse>>('/auth/me', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
